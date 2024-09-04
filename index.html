@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head> <!-- Added the missing <head> tag -->
+        <title>Fastying Challenge</title>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+        <style>
+            body {
+                font-family: 'Poppins', sans-serif;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                margin: 0;
+                background: linear-gradient(45deg, #FF6B6B, #4ECDC4, #45B7D1);
+                background-size: 400% 400%;
+                animation: gradientBG 15s ease infinite;
+                color: #ffffff;
+            }
+            @keyframes gradientBG {
+                0% { background-position: 0% 50%; }
+                50% { background-position: 100% 50%; }
+                100% { background-position: 0% 50%; }
+            }
+            .game-container {
+                text-align: center;
+                background-color: rgba(255, 255, 255, 0.1);
+                padding: 3rem;
+                border-radius: 20px;
+                box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+                backdrop-filter: blur(8px);
+                border: 1px solid rgba(255, 255, 255, 0.18);
+                max-width: 450px;
+                width: 100%;
+            }
+            h1 {
+                margin-bottom: 2rem;
+                font-size: 3rem;
+                font-weight: 700;
+                text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+                letter-spacing: 2px;
+            }
+            #word {
+                font-size: 3rem;
+                font-weight: bold;
+                margin-bottom: 2rem;
+                min-height: 70px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                text-shadow: 0 0 10px rgba(255,255,255,0.5);
+                letter-spacing: 3px;
+            }
+            #input {
+                font-size: 1.4rem;
+                padding: 1rem;
+                margin-bottom: 2rem;
+                width: 90%;
+                border: none;
+                border-radius: 50px;
+                background-color: rgba(255, 255, 255, 0.2);
+                color: #ffffff;
+                text-align: center;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            }
+            #input:focus {
+                outline: none;
+                box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5);
+            }
+            #input::placeholder {
+                color: rgba(255, 255, 255, 0.7);
+            }
+            .stats {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 2rem;
+                font-size: 1.2rem;
+                font-weight: 600;
+            }
+            #timer, #score, #high-score {
+                background-color: rgba(255, 255, 255, 0.2);
+                padding: 0.5rem 1rem;
+                border-radius: 20px;
+                min-width: 100px;
+            }
+            #start-btn {
+                font-size: 1.4rem;
+                font-weight: 600;
+                padding: 1rem 2.5rem;
+                background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+                color: white;
+                border: none;
+                border-radius: 50px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                text-transform: uppercase;
+                letter-spacing: 1px;
+            }
+            #start-btn:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+                background: linear-gradient(45deg, #4ECDC4, #FF6B6B);
+            }
+            #start-btn:disabled {
+                background: #cccccc;
+                cursor: not-allowed;
+                transform: none;
+                box-shadow: none;
+            }
+            @keyframes pulse {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.05); }
+                100% { transform: scale(1); }
+            }
+            .pulse {
+                animation: pulse 0.5s;
+            }
+            #new-high-score {
+                position: absolute;
+                top: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                background-color: #FFD700;
+                color: #000;
+                padding: 10px 20px;
+                border-radius: 20px;
+                font-weight: bold;
+                display: none;
+            }
+        </style>
+    </head> <!-- Closed the <head> tag here -->
+    <body>
+    <div id="new-high-score">New High Score!</div>
+    <div class="game-container">
+        <h1>Fastying Challenge</h1>
+        <div id="word">Press Start to begin!</div>
+        <input type="text" id="input" placeholder="Type here..." disabled>
+        <div class="stats">
+            <div id="timer">Time: 90s</div>
+            <div id="score">Score: 0</div>
+            <div id="high-score">High: 0</div>
+        </div>
+        <button id="start-btn">Start Game</button>
+    </div>
+    
+    <script>
+    const words = ['idc', 'ik', 'lol', 'brb', 'tbh', 'fyi', 'omg', 'wtf', 'asap', 'rn', 'smh', 'imo', 'nvm', 'tba', 'tgif', 'afaik', 'iirc', 'imho', 'yolo', 'fomo', 'rofl', 'lmao', 'ttyl', 'ftw', 'idk', 'ily', 'jk', 'dm', 'irl', 'tmi', 'gtg', 'hmu', 'imo', 'imho', 'fwiw', 'tl;dr', 'ama', 'eli5', 'nsfw', 'nsfl', 'ftfy', 'til', 'iirc', 'ianal', 'ymmv', 'inb4', 'iykyk', 'fwiw', 'ysk', 'smh', 'iirc', 'ftw', 'afaik', 'iirc', 'fomo', 'fwb', 'ootl', 'eli5', 'tia', 'ymmv', 'yolo', 'ysk', 'yt', 'iirc'];
+    
+    let currentWord = '';
+    let score = 0;
+    let highScore = localStorage.getItem('highScore') || 0;
+    let timeLeft = 90;
+    let timerInterval;
+    let wordSpeed = 3000; // Start with 3 seconds per word
+    let firstWordTyped = false;
+    
+    const wordElement = document.getElementById('word');
+    const inputElement = document.getElementById('input');
+    const timerElement = document.getElementById('timer');
+    const scoreElement = document.getElementById('score');
+    const highScoreElement = document.getElementById('high-score');
+    const startButton = document.getElementById('start-btn');
+    const newHighScoreElement = document.getElementById('new-high-score');
+    
+    highScoreElement.textContent = `High: ${highScore}`;
+    
+    function startGame() {
+        score = 0;
+        timeLeft = 90;
+        wordSpeed = 3000;
+        firstWordTyped = false;
+        scoreElement.textContent = `Score: ${score}`;
+        timerElement.textContent = `Time: ${timeLeft}s`;
+        inputElement.disabled = false;
+        inputElement.focus();
+        startButton.disabled = true;
+        newHighScoreElement.style.display = 'none';
+    
+        timerInterval = setInterval(updateTimer, 1000);
+        newWord();
+    }
+    
+    function updateTimer() {
+        timeLeft--;
+        timerElement.textContent = `Time: ${timeLeft}s`;
+        if (timeLeft <= 0) {
+            endGame();
+        }
+    }
+    
+    function newWord() {
+        currentWord = words[Math.floor(Math.random() * words.length)];
+        wordElement.textContent = currentWord;
+        wordElement.classList.add('pulse');
+        setTimeout(() => wordElement.classList.remove('pulse'), 500);
+        inputElement.value = '';
+        firstWordTyped = false;
+    }
+    
+    function checkWord() {
+        if (inputElement.value.toLowerCase() === currentWord) {
+            score++;
+            scoreElement.textContent = `Score: ${score}`;
+            scoreElement.classList.add('pulse');
+            setTimeout(() => scoreElement.classList.remove('pulse'), 500);
+            wordSpeed = Math.max(wordSpeed - 100, 500); // Decrease time, but not below 0.5 seconds
+            timeLeft = Math.max(timeLeft - 5, 5); // Decrease time, but not below 5 seconds
+            newWord();
+        }
+    }
+    
+    function endGame() {
+        clearInterval(timerInterval);
+        wordElement.textContent = `Game Over! Final Score: ${score}`;
+        inputElement.disabled = true;
+        startButton.disabled = false;
+        createConfetti();
+    
+        if (score > highScore) {
+            highScore = score;
+            localStorage.setItem('highScore', highScore);
+            highScoreElement.textContent = `High: ${highScore}`;
+            newHighScoreElement.style.display = 'block';
+            setTimeout(() => {
+                newHighScoreElement.style.display = 'none';
+            }, 3000);
+        }
+    }
+    
+    inputElement.addEventListener('input', () => {
+        if (!firstWordTyped && inputElement.value.length > 0) {
+            firstWordTyped = true;
+        }
+        if (firstWordTyped && inputElement.value.toLowerCase() === currentWord) {
+            checkWord();
+        }
+    });
+    
+    startButton.addEventListener('click', startGame);
+    
+    // Add some visual feedback when typing
+    inputElement.addEventListener('keydown', (e) => {
+        if (e.key.length === 1) {
+            inputElement.classList.add('pulse');
+            setTimeout(() => {
+                inputElement.classList.remove('pulse');
+            }, 100);
+        }
+    });
+    
+    // Confetti effect on game over
+    function createConfetti() {
+        const confettiCount = 200;
+        const confettiContainer = document.createElement('div');
+        confettiContainer.style.position = 'fixed';
+        confettiContainer.style.top = '0';
+        confettiContainer.style.left = '0';
+        confettiContainer.style.width = '100%';
+        confettiContainer.style.height = '100%';
+        confettiContainer.style.pointerEvents = 'none';
+        document.body.appendChild(confettiContainer);
+    
+        for (let i = 0; i < confettiCount; i++) {
+            const confetti = document.createElement('div');
+            confetti.style.position = 'absolute';
+            confetti.style.width = '10px';
+            confetti.style.height = '10px';
+            confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+            confetti.style.borderRadius = '50%';
+            confetti.style.top = '-10px';
+            confetti.style.left = `${Math.random() * 100}%`;
+            confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+            confetti.style.opacity = Math.random();
+            confetti.style.animation = `fall ${Math.random() * 3 + 2}s linear`;
+            confettiContainer.appendChild(confetti);
+        }
+    
+        setTimeout(() => {
+            confettiContainer.remove();
+        }, 5000);
+    }
+    
+    // Add falling animation for confetti
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(720deg);
+            }
+        }
+    `;
+    document.head.appendChild(style);
+    </script>
+    </body>
+</html>
