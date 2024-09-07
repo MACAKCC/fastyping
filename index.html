@@ -1,296 +1,530 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head> <!-- Added the missing <head> tag -->
-        <title>Fastying Challenge</title>
-        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-        <style>
-            body {
-                font-family: 'Poppins', sans-serif;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                height: 100vh;
-                margin: 0;
-                background: linear-gradient(45deg, #FF6B6B, #4ECDC4, #45B7D1);
-                background-size: 400% 400%;
-                animation: gradientBG 15s ease infinite;
-                color: #ffffff;
+<html>
+    <head>
+    
+    <title>Ultimate Snake Game</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #00c6fb 0%, #005bea 100%);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #ffffff;
+            box-sizing: border-box;
+        }
+        .container {
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            width: 100%;
+            max-width: 800px;
+        }
+        h1 {
+            color: #ffffff;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        .gameCanvas {
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            margin: 10px;
+            max-width: 100%;
+            height: auto;
+        }
+        button {
+            background-color: #ff6b6b;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 10px 5px;
+            cursor: pointer;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            font-weight: 600;
+        }
+        button:hover {
+            background-color: #ff8787;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+        .loseMessage {
+            font-size: 24px;
+            color: #feca57;
+            margin-top: 1rem;
+            font-weight: 300;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        .score {
+            font-size: 18px;
+            margin-bottom: 1rem;
+            font-weight: 400;
+        }
+        .controls {
+            margin-top: 1rem;
+            font-size: 14px;
+            color: #ffffff;
+            opacity: 0.8;
+        }
+        .gameArea {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-around;
+        }
+        .playerArea, .botArea {
+            margin: 10px;
+        }
+        select {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            background-color: #ffffff;
+            border: none;
+            margin: 10px 0;
+        }
+        #timer {
+            display: none;
+            font-size: 48px;
+            margin: 20px 0;
+        }
+        .menuButton {
+            background-color: #4ecdc4;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            margin: 10px 5px;
+            cursor: pointer;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            font-weight: 600;
+        }
+        .menuButton:hover {
+            background-color: #45b7ae;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+        @media (min-width: 768px) {
+            .gameArea {
+                flex-direction: row;
             }
-            @keyframes gradientBG {
-                0% { background-position: 0% 50%; }
-                50% { background-position: 100% 50%; }
-                100% { background-position: 0% 50%; }
-            }
-            .game-container {
-                text-align: center;
-                background-color: rgba(255, 255, 255, 0.1);
-                padding: 3rem;
-                border-radius: 20px;
-                box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-                backdrop-filter: blur(8px);
-                border: 1px solid rgba(255, 255, 255, 0.18);
-                max-width: 450px;
-                width: 100%;
-            }
-            h1 {
-                margin-bottom: 2rem;
-                font-size: 3rem;
-                font-weight: 700;
-                text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-                letter-spacing: 2px;
-            }
-            #word {
-                font-size: 3rem;
-                font-weight: bold;
-                margin-bottom: 2rem;
-                min-height: 70px;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                text-shadow: 0 0 10px rgba(255,255,255,0.5);
-                letter-spacing: 3px;
-            }
-            #input {
-                font-size: 1.4rem;
-                padding: 1rem;
-                margin-bottom: 2rem;
-                width: 90%;
-                border: none;
-                border-radius: 50px;
-                background-color: rgba(255, 255, 255, 0.2);
-                color: #ffffff;
-                text-align: center;
-                transition: all 0.3s ease;
-                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            }
-            #input:focus {
-                outline: none;
-                box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5);
-            }
-            #input::placeholder {
-                color: rgba(255, 255, 255, 0.7);
-            }
-            .stats {
-                display: flex;
-                justify-content: space-between;
-                margin-bottom: 2rem;
-                font-size: 1.2rem;
-                font-weight: 600;
-            }
-            #timer, #score, #high-score {
-                background-color: rgba(255, 255, 255, 0.2);
-                padding: 0.5rem 1rem;
-                border-radius: 20px;
-                min-width: 100px;
-            }
-            #start-btn {
-                font-size: 1.4rem;
-                font-weight: 600;
-                padding: 1rem 2.5rem;
-                background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
-                color: white;
-                border: none;
-                border-radius: 50px;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-                text-transform: uppercase;
-                letter-spacing: 1px;
-            }
-            #start-btn:hover {
-                transform: translateY(-3px);
-                box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
-                background: linear-gradient(45deg, #4ECDC4, #FF6B6B);
-            }
-            #start-btn:disabled {
-                background: #cccccc;
-                cursor: not-allowed;
-                transform: none;
-                box-shadow: none;
-            }
-            @keyframes pulse {
-                0% { transform: scale(1); }
-                50% { transform: scale(1.05); }
-                100% { transform: scale(1); }
-            }
-            .pulse {
-                animation: pulse 0.5s;
-            }
-            #new-high-score {
-                position: absolute;
-                top: 20px;
-                left: 50%;
-                transform: translateX(-50%);
-                background-color: #FFD700;
-                color: #000;
-                padding: 10px 20px;
-                border-radius: 20px;
-                font-weight: bold;
-                display: none;
-            }
-        </style>
-    </head> <!-- Closed the <head> tag here -->
-    <body>
-    <div id="new-high-score">New High Score!</div>
-    <div class="game-container">
-        <h1>Fastying Challenge</h1>
-        <div id="word">Press Start to begin!</div>
-        <input type="text" id="input" placeholder="Type here..." disabled>
-        <div class="stats">
-            <div id="timer">Time: 90s</div>
-            <div id="score">Score: 0</div>
-            <div id="high-score">High: 0</div>
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Ultimate Snake Game</h1>
+        <div id="timer">5</div>
+        <div id="mainMenu">
+            <button onclick="startGame('single')">Start Game</button>
+            <button onclick="startGame('1v1')">1v1 vs Bot</button>
         </div>
-        <button id="start-btn">Start Game</button>
+        <div id="difficultySelect" style="display:none;">
+            <select id="botDifficulty">
+                <option value="easy">Easy</option>
+                <option value="medium">Medium</option>
+                <option value="hard">Hard</option>
+            </select>
+            <button onclick="startGameWithDifficulty()">Start 1v1</button>
+        </div>
+        <div id="gameArea" style="display:none;" class="gameArea">
+            <div class="playerArea">
+                <div class="score" id="playerScore">Score: 0</div>
+                <canvas id="playerCanvas" class="gameCanvas"></canvas>
+                <div class="loseMessage" id="playerLoseMessage"></div>
+            </div>
+            <div class="botArea" style="display:none;">
+                <div class="score" id="botScore">Bot Score: 0</div>
+                <canvas id="botCanvas" class="gameCanvas"></canvas>
+                <div class="loseMessage" id="botLoseMessage"></div>
+            </div>
+            <button onclick="returnToMainMenu()" class="menuButton">Return to Main Menu</button>
+        </div>
+        <button onclick="restartGame()" style="display:none;">Play Again</button>
+        <div class="controls">Use W, A, S, D keys to move the snake</div>
     </div>
-    
+
     <script>
-    const words = ['idc', 'ik', 'lol', 'brb', 'tbh', 'fyi', 'omg', 'wtf', 'asap', 'rn', 'smh', 'imo', 'nvm', 'tba', 'tgif', 'afaik', 'iirc', 'imho', 'yolo', 'fomo', 'rofl', 'lmao', 'ttyl', 'ftw', 'idk', 'ily', 'jk', 'dm', 'irl', 'tmi', 'gtg', 'hmu', 'imo', 'imho', 'fwiw', 'tl;dr', 'ama', 'eli5', 'nsfw', 'nsfl', 'ftfy', 'til', 'iirc', 'ianal', 'ymmv', 'inb4', 'iykyk', 'fwiw', 'ysk', 'smh', 'iirc', 'ftw', 'afaik', 'iirc', 'fomo', 'fwb', 'ootl', 'eli5', 'tia', 'ymmv', 'yolo', 'ysk', 'yt', 'iirc'];
-    
-    let currentWord = '';
-    let score = 0;
-    let highScore = localStorage.getItem('highScore') || 0;
-    let timeLeft = 90;
-    let timerInterval;
-    let wordSpeed = 3000; // Start with 3 seconds per word
-    let firstWordTyped = false;
-    
-    const wordElement = document.getElementById('word');
-    const inputElement = document.getElementById('input');
-    const timerElement = document.getElementById('timer');
-    const scoreElement = document.getElementById('score');
-    const highScoreElement = document.getElementById('high-score');
-    const startButton = document.getElementById('start-btn');
-    const newHighScoreElement = document.getElementById('new-high-score');
-    
-    highScoreElement.textContent = `High: ${highScore}`;
-    
-    function startGame() {
-        score = 0;
-        timeLeft = 90;
-        wordSpeed = 3000;
-        firstWordTyped = false;
-        scoreElement.textContent = `Score: ${score}`;
-        timerElement.textContent = `Time: ${timeLeft}s`;
-        inputElement.disabled = false;
-        inputElement.focus();
-        startButton.disabled = true;
-        newHighScoreElement.style.display = 'none';
-    
-        timerInterval = setInterval(updateTimer, 1000);
-        newWord();
-    }
-    
-    function updateTimer() {
-        timeLeft--;
-        timerElement.textContent = `Time: ${timeLeft}s`;
-        if (timeLeft <= 0) {
-            endGame();
+        let playerGame, botGame;
+        let gameMode = 'single';
+        let botDifficulty = 'easy';
+        let countdown;
+
+        function startCountdown() {
+            let timerElement = document.getElementById('timer');
+            timerElement.style.display = 'block';
+            let timeLeft = 5;
+
+            countdown = setInterval(() => {
+                timerElement.textContent = timeLeft;
+                timeLeft--;
+
+                if (timeLeft < 0) {
+                    clearInterval(countdown);
+                    timerElement.style.display = 'none';
+                    initGame();
+                }
+            }, 1000);
         }
-    }
-    
-    function newWord() {
-        currentWord = words[Math.floor(Math.random() * words.length)];
-        wordElement.textContent = currentWord;
-        wordElement.classList.add('pulse');
-        setTimeout(() => wordElement.classList.remove('pulse'), 500);
-        inputElement.value = '';
-        firstWordTyped = false;
-    }
-    
-    function checkWord() {
-        if (inputElement.value.toLowerCase() === currentWord) {
-            score++;
-            scoreElement.textContent = `Score: ${score}`;
-            scoreElement.classList.add('pulse');
-            setTimeout(() => scoreElement.classList.remove('pulse'), 500);
-            wordSpeed = Math.max(wordSpeed - 100, 500); // Decrease time, but not below 0.5 seconds
-            timeLeft = Math.max(timeLeft - 5, 5); // Decrease time, but not below 5 seconds
-            newWord();
-        }
-    }
-    
-    function endGame() {
-        clearInterval(timerInterval);
-        wordElement.textContent = `Game Over! Final Score: ${score}`;
-        inputElement.disabled = true;
-        startButton.disabled = false;
-        createConfetti();
-    
-        if (score > highScore) {
-            highScore = score;
-            localStorage.setItem('highScore', highScore);
-            highScoreElement.textContent = `High: ${highScore}`;
-            newHighScoreElement.style.display = 'block';
-            setTimeout(() => {
-                newHighScoreElement.style.display = 'none';
-            }, 3000);
-        }
-    }
-    
-    inputElement.addEventListener('input', () => {
-        if (!firstWordTyped && inputElement.value.length > 0) {
-            firstWordTyped = true;
-        }
-        if (firstWordTyped && inputElement.value.toLowerCase() === currentWord) {
-            checkWord();
-        }
-    });
-    
-    startButton.addEventListener('click', startGame);
-    
-    // Add some visual feedback when typing
-    inputElement.addEventListener('keydown', (e) => {
-        if (e.key.length === 1) {
-            inputElement.classList.add('pulse');
-            setTimeout(() => {
-                inputElement.classList.remove('pulse');
-            }, 100);
-        }
-    });
-    
-    // Confetti effect on game over
-    function createConfetti() {
-        const confettiCount = 200;
-        const confettiContainer = document.createElement('div');
-        confettiContainer.style.position = 'fixed';
-        confettiContainer.style.top = '0';
-        confettiContainer.style.left = '0';
-        confettiContainer.style.width = '100%';
-        confettiContainer.style.height = '100%';
-        confettiContainer.style.pointerEvents = 'none';
-        document.body.appendChild(confettiContainer);
-    
-        for (let i = 0; i < confettiCount; i++) {
-            const confetti = document.createElement('div');
-            confetti.style.position = 'absolute';
-            confetti.style.width = '10px';
-            confetti.style.height = '10px';
-            confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
-            confetti.style.borderRadius = '50%';
-            confetti.style.top = '-10px';
-            confetti.style.left = `${Math.random() * 100}%`;
-            confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
-            confetti.style.opacity = Math.random();
-            confetti.style.animation = `fall ${Math.random() * 3 + 2}s linear`;
-            confettiContainer.appendChild(confetti);
-        }
-    
-        setTimeout(() => {
-            confettiContainer.remove();
-        }, 5000);
-    }
-    
-    // Add falling animation for confetti
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes fall {
-            to {
-                transform: translateY(100vh) rotate(720deg);
+
+        function startGame(mode) {
+            gameMode = mode;
+            document.getElementById('mainMenu').style.display = 'none';
+            document.getElementById('gameArea').style.display = 'flex';
+
+            playerGame = null;
+            botGame = null;
+
+            if (mode === '1v1') {
+                document.getElementById('difficultySelect').style.display = 'block';
+            } else {
+                startCountdown();
             }
         }
-    `;
-    document.head.appendChild(style);
+
+        function startGameWithDifficulty() {
+            botDifficulty = document.getElementById('botDifficulty').value;
+            document.getElementById('difficultySelect').style.display = 'none';
+            startCountdown();
+        }
+
+        function initGame() {
+            playerGame = new SnakeGame('playerCanvas', 'playerScore', 'playerLoseMessage');
+            playerGame.start();
+
+            if (gameMode === '1v1') {
+                document.querySelector('.botArea').style.display = 'block';
+                botGame = new SnakeGame('botCanvas', 'botScore', 'botLoseMessage', true);
+                botGame.start();
+            }
+        }
+
+        function restartGame() {
+            document.querySelectorAll('.loseMessage').forEach(el => el.textContent = '');
+            document.querySelector('button[onclick="restartGame()"]').style.display = 'none';
+
+            if (playerGame) playerGame.reset();
+            if (botGame) botGame.reset();
+
+            startCountdown();
+        }
+
+        function returnToMainMenu() {
+            if (playerGame) playerGame.endGame();
+            if (botGame) botGame.endGame();
+            if (countdown) clearInterval(countdown);
+
+            document.getElementById('mainMenu').style.display = 'block';
+            document.getElementById('gameArea').style.display = 'none';
+            document.getElementById('difficultySelect').style.display = 'none';
+            document.querySelector('.botArea').style.display = 'none';
+            document.querySelector('button[onclick="restartGame()"]').style.display = 'none';
+            document.getElementById('timer').style.display = 'none';
+
+            document.querySelectorAll('.loseMessage').forEach(el => el.textContent = '');
+            gameMode = 'single';
+        }
+
+        class SnakeGame {
+            constructor(canvasId, scoreId, loseMessageId, isBot = false) {
+                this.canvas = document.getElementById(canvasId);
+                this.ctx = this.canvas.getContext('2d');
+                this.scoreElement = document.getElementById(scoreId);
+                this.loseMessageElement = document.getElementById(loseMessageId);
+                this.isBot = isBot;
+
+                this.canvas.width = 300;
+                this.canvas.height = 300;
+                this.gridSize = this.canvas.width / 20;
+                this.tileCount = 20;
+                this.snakeSpeed = 10;
+                this.updateInterval = 1000 / this.snakeSpeed;
+                this.lastUpdateTime = 0;
+
+                this.reset();
+            }
+
+            reset() {
+                this.snake = [{x: 10, y: 10}];
+                this.food = this.getRandomFood();
+                this.score = 0;
+                this.direction = 'right';
+                this.updateScore();
+                this.gameLoop = null;
+                this.lastUpdateTime = 0;
+            }
+
+            start() {
+                if (this.gameLoop) cancelAnimationFrame(this.gameLoop);
+                this.gameLoop = requestAnimationFrame(this.loop.bind(this));
+                if (!this.isBot) {
+                    document.addEventListener('keydown', this.changeDirection.bind(this));
+                }
+            }
+
+            loop(currentTime) {
+                this.gameLoop = requestAnimationFrame(this.loop.bind(this));
+
+                const timeSinceLastUpdate = currentTime - this.lastUpdateTime;
+
+                if (timeSinceLastUpdate >= this.updateInterval) {
+                    this.lastUpdateTime = currentTime - (timeSinceLastUpdate % this.updateInterval);
+                    this.update();
+                }
+
+                this.draw();
+            }
+
+            update() {
+                const head = {...this.snake[0]};
+
+                if (this.isBot) {
+                    this.botMove();
+                }
+
+                switch(this.direction) {
+                    case 'up': head.y--; break;
+                    case 'down': head.y++; break;
+                    case 'left': head.x--; break;
+                    case 'right': head.x++; break;
+                }
+
+                if (head.x < 0 || head.x >= this.tileCount || head.y < 0 || head.y >= this.tileCount || this.collision(head)) {
+                    this.gameOver();
+                    return;
+                }
+
+                this.snake.unshift(head);
+
+                if (head.x === this.food.x && head.y === this.food.y) {
+                    this.score++;
+                    this.updateScore();
+                    this.food = this.getRandomFood();
+                } else {
+                    this.snake.pop();
+                }
+            }
+
+            draw() {
+                this.ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+                this.ctx.fillStyle = this.isBot ? '#ff6b6b' : '#4ecdc4';
+                this.snake.forEach((segment, index) => {
+                    if (index === 0) {
+                        this.drawRoundedRect(segment.x * this.gridSize, segment.y * this.gridSize, this.gridSize - 2, this.gridSize - 2, 8);
+
+                        this.ctx.fillStyle = '#ffffff';
+                        this.ctx.beginPath();
+                        this.ctx.arc(segment.x * this.gridSize + 5, segment.y * this.gridSize + 5, 2, 0, Math.PI * 2);
+                        this.ctx.arc(segment.x * this.gridSize + 15, segment.y * this.gridSize + 5, 2, 0, Math.PI * 2);
+                        this.ctx.fill();
+                        this.ctx.fillStyle = this.isBot ? '#ff6b6b' : '#4ecdc4';
+                    } else {
+                        this.drawRoundedRect(segment.x * this.gridSize, segment.y * this.gridSize, this.gridSize - 2, this.gridSize - 2, 4);
+                    }
+                });
+
+                this.ctx.fillStyle = '#ff6b6b';
+                this.drawApple(this.food.x * this.gridSize + this.gridSize / 2, this.food.y * this.gridSize + this.gridSize / 2, this.gridSize / 2 - 2);
+            }
+
+            drawRoundedRect(x, y, width, height, radius) {
+                this.ctx.beginPath();
+                this.ctx.moveTo(x + radius, y);
+                this.ctx.arcTo(x + width, y, x + width, y + height, radius);
+                this.ctx.arcTo(x + width, y + height, x, y + height, radius);
+                this.ctx.arcTo(x, y + height, x, y, radius);
+                this.ctx.arcTo(x, y, x + width, y, radius);
+                this.ctx.closePath();
+                this.ctx.fill();
+            }
+
+            drawApple(x, y, radius) {
+                this.ctx.beginPath();
+                this.ctx.arc(x, y, radius, 0, Math.PI * 2);
+                this.ctx.fill();
+
+                this.ctx.fillStyle = '#4ecdc4';
+                this.ctx.beginPath();
+                this.ctx.moveTo(x, y - radius);
+                this.ctx.quadraticCurveTo(x + radius / 2, y - radius - 5, x + radius / 2, y - radius);
+                this.ctx.quadraticCurveTo(x + radius / 4, y - radius + 5, x, y - radius);
+                this.ctx.fill();
+            }
+
+            getRandomFood() {
+                return {
+                    x: Math.floor(Math.random() * this.tileCount),
+                    y: Math.floor(Math.random() * this.tileCount)
+                };
+            }
+
+            changeDirection(event) {
+                const key = event.key.toLowerCase();
+                const keyDirections = {
+                    'a': 'left',
+                    'w': 'up',
+                    'd': 'right',
+                    's': 'down'
+                };
+
+                if (key in keyDirections && 
+                    (keyDirections[key] !== this.getOppositeDirection(this.direction))) {
+                    this.direction = keyDirections[key];
+                }
+            }
+
+            getOppositeDirection(dir) {
+                const opposites = {
+                    'up': 'down',
+                    'down': 'up',
+                    'left': 'right',
+                    'right': 'left'
+                };
+                return opposites[dir];
+            }
+
+            collision(head) {
+                return this.snake.some((segment, index) => index !== 0 && segment.x === head.x && segment.y === head.y);
+            }
+
+            updateScore() {
+                this.scoreElement.textContent = `${this.isBot ? 'Bot ' : ''}Score: ${this.score}`;
+            }
+
+            gameOver() {
+                cancelAnimationFrame(this.gameLoop);
+                const messages = [
+                    "Oops! You've become a knot!",
+                    "Game over! Your snake got too ambitious.",
+                    "Looks like you've hit a wall... literally!",
+                    "Snake down! Time for a new strategy.",
+                    "Your snake's journey has come to an end."
+                ];
+                const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+                this.loseMessageElement.textContent = `${this.isBot ? 'Bot: ' : ''}${randomMessage} Final score: ${this.score}`;
+
+                if (gameMode === '1v1') {
+                    if (this.isBot) {
+                        playerGame.endGame();
+                    } else {
+                        botGame.endGame();
+                    }
+                }
+
+                document.querySelector('button[onclick="restartGame()"]').style.display = 'inline-block';
+            }
+
+            endGame() {
+                cancelAnimationFrame(this.gameLoop);
+            }
+
+            botMove() {
+                let head = this.snake[0];
+                let food = this.food;
+
+                if (botDifficulty === 'easy') {
+                    let directions = ['up', 'down', 'left', 'right'];
+                    this.direction = directions[Math.floor(Math.random() * directions.length)];
+                } else if (botDifficulty === 'medium') {
+                    if (Math.random() < 0.5) {
+                        this.direction = head.x < food.x ? 'right' : head.x > food.x ? 'left' : this.direction;
+                    } else {
+                        this.direction = head.y < food.y ? 'down' : head.y > food.y ? 'up' : this.direction;
+                    }
+                } else if (botDifficulty === 'hard') {
+                    let possibleMoves = this.getPossibleMoves(head);
+                    if (possibleMoves.length > 0) {
+                        let bestMove = this.getBestMove(head, food, possibleMoves);
+                        if (Math.random() < 0.1) {
+                            this.direction = possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
+                        } else {
+                            this.direction = bestMove;
+                        }
+                    }
+                }
+
+                let newHead = {...head};
+                switch(this.direction) {
+                    case 'up': newHead.y--; break;
+                    case 'down': newHead.y++; break;
+                    case 'left': newHead.x--; break;
+                    case 'right': newHead.x++; break;
+                }
+
+                if (newHead.x < 0 || newHead.x >= this.tileCount || newHead.y < 0 || newHead.y >= this.tileCount || this.collision(newHead)) {
+                    let safeMoves = this.getPossibleMoves(head);
+                    if (safeMoves.length > 0) {
+                        this.direction = safeMoves[Math.floor(Math.random() * safeMoves.length)];
+                    }
+                }
+            }
+
+            getPossibleMoves(head) {
+                return ['up', 'down', 'left', 'right'].filter(dir => {
+                    let testHead = {...head};
+                    switch(dir) {
+                        case 'up': testHead.y--; break;
+                        case 'down': testHead.y++; break;
+                        case 'left': testHead.x--; break;
+                        case 'right': testHead.x++; break;
+                    }
+                    return !(testHead.x < 0 || testHead.x >= this.tileCount || testHead.y < 0 || testHead.y >= this.tileCount || this.collision(testHead));
+                });
+            }
+
+            getBestMove(head, food, possibleMoves) {
+                let bestMove = possibleMoves[0];
+                let minDistance = Infinity;
+
+                for (let move of possibleMoves) {
+                    let newHead = {...head};
+                    switch(move) {
+                        case 'up': newHead.y--; break;
+                        case 'down': newHead.y++; break;
+                        case 'left': newHead.x--; break;
+                        case 'right': newHead.x++; break;
+                    }
+                    let distance = Math.abs(newHead.x - food.x) + Math.abs(newHead.y - food.y);
+                    if (distance < minDistance) {
+                        minDistance = distance;
+                        bestMove = move;
+                    }
+                }
+
+                return bestMove;
+            }
+        }
+
+        window.startGame = startGame;
+        window.startGameWithDifficulty = startGameWithDifficulty;
+        window.restartGame = restartGame;
+        window.returnToMainMenu = returnToMainMenu;
     </script>
-    </body>
+</body>
 </html>
